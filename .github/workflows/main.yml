@@ -1,7 +1,8 @@
 name: My workflow
 on: [push]
 jobs:
-  -build:
-  -runs-on: ubuntu-latest
-  -steps: 
-    -run: echo “Hello me”
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: echo "test"

@@ -1,30 +1,32 @@
-# name: My workflow
-# on: [push]
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: test
-#         run: echo "test deploy"
+name: test2
 
-name: Print Text from hellome.
 on:
   push:
     branches:
       - main
+
 jobs:
-  print-text:
+  job1:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Print text from file.txt
-        run: cat a.html
-      - name: Deploy
-        # Only run this step if the branch is main
-        if: github.ref == 'refs/heads/main'
-        env:
-          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Run functional_test1
         run: |
-          echo $deploy_url
-          curl "$deploy_url"
+          output=$(node func_test1.js)
+          # Capture the exit code of the previous command
+          exit_code=$output
+
+          # Check the exit code to determine if there was an error
+          if [ $exit_code -ne 0 ]; then
+            echo "Error: The Node.js script failed with exit code $exit_code"
+            # You can add more error-handling actions here if needed
+            exit 1  # Exit the workflow with an error code
+          fi
